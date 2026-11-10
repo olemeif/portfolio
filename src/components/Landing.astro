@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from '../data/site';
+import { content, type Locale } from '../data/content';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const c = content[lang];
+const other = content[lang === 'en' ? 'de' : 'en'];
+---
+
+<Base lang = {lang} title={c.title} description={c.description} path={c.path} altPath={other.path}>
+    <main>
+        <section class="hero rise">
+            <h1>{site.name}</h1>
+            <p class="role mono">{c.role}</p>
+        </section>
+    </main>
+</Base>

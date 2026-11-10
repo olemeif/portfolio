@@ -1,0 +1,142 @@
+---
+import '../styles/global.css';
+import { content, type Locale } from '../data/content';
+import { site } from '../data/site';
+import LanguagesIcon from '../icons/languages.svg';
+import SunMoonIcon from '../icons/sun-moon.svg';
+import MoonStarIcon from '../icons/moon-star.svg';
+import SunIcon from '../icons/sun.svg';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description?: string;
+  /** Path of this page, e.g. "/" or "/de/". */
+  path: string;
+  /** Path of the same page in the other language, if there is one. */
+  altPath?: string;
+  noindex?: boolean;
+}
+
+
+const { lang, title, description, path, altPath, noindex = false } = Astro.props;
+const t = content[lang].labels;
+const home = content[lang].path;
+const canonical = new URL(path, site.url).href;
+const otherLang: Locale = lang === 'en' ? 'de' : 'en';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {
+      altPath && (
+        <>
+          <link rel="alternate" hreflang={lang} href={canonical} />
+          <link rel="alternate" hreflang={otherLang} href={new URL(altPath, site.url).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL('/', site.url).href} />
+        </>
+      )
+    }
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#fafaf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1113" media="(prefers-color-scheme: dark)" />
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+    <body>
+    <div class="wrap">
+      <header class="bar mono">
+        <a href={home}>olemeif.de</a>
+        <div class="bar-right">
+          {
+            altPath && (
+              <a
+                class="icon-btn"
+                href={altPath}
+                lang={otherLang}
+                hreflang={otherLang}
+                aria-label={t.switchLang}
+                title={t.switchLang}
+              >
+                <LanguagesIcon width="16" height="16" aria-hidden="true" />
+              </a>
+            )
+          }
+          <button
+            class="icon-btn theme-toggle"
+            type="button"
+            aria-label={`${t.theme}: ${t.themeSystem}`}
+            title={`${t.theme}: ${t.themeSystem}`}
+            data-label={t.theme}
+            data-system={t.themeSystem}
+            data-light={t.themeLight}
+            data-dark={t.themeDark}
+          >
+            <SunMoonIcon class="theme-icon theme-icon-system" width="16" height="16" aria-hidden="true" />
+            <SunIcon class="theme-icon theme-icon-light" width="16" height="16" aria-hidden="true" />
+            <MoonStarIcon class="theme-icon theme-icon-dark" width="16" height="16" aria-hidden="true" />
+          </button>
+        </div>
+      </header>
+
+      <slot />
+
+      <footer class="footer mono">
+        <span>© {new Date().getFullYear()} {site.name}</span>
+        <nav aria-label="Legal">
+          <a href="/impressum/">{t.legal}</a>
+          <a href="/datenschutz/">{t.privacy}</a>
+        </nav>
+      </footer>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var btn = document.querySelector('.theme-toggle');
+
+        // Three states: 'system' (no data-theme), 'light', 'dark'.
+        function label(state) {
+          var text = btn.dataset.label + ': ' + btn.dataset[state];
+          btn.setAttribute('aria-label', text);
+          btn.setAttribute('title', text);
+        }
+
+        label(root.dataset.theme || 'system');
+
+        btn.addEventListener('click', function () {
+          var current = root.dataset.theme || 'system';
+          // From system, switch to the opposite of what the OS shows so the first click is visible.
+          var order = matchMedia('(prefers-color-scheme: dark)').matches
+            ? ['system', 'light', 'dark']
+            : ['system', 'dark', 'light'];
+          var next = order[(order.indexOf(current) + 1) % order.length];
+
+          try {
+            if (next === 'system') localStorage.removeItem('theme');
+            else localStorage.setItem('theme', next);
+          } catch (e) {}
+
+          if (next === 'system') delete root.dataset.theme;
+          else root.dataset.theme = next;
+          label(next);
+        });
+      })();
+    </script>
+  </body>
+</html>
