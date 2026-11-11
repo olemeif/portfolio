@@ -1,0 +1,70 @@
+---
+import Hud from '../layouts/Hud.astro';
+import { site } from '../data/site';
+
+const host = site.hostingProvider;
+---
+
+<Hud lang="de" title={`Datenschutz — ${site.name}`} path="/datenschutz/" noindex>
+  <main class="prose">
+    <h1>Datenschutzerklärung</h1>
+    <p class="note">Privacy policy (in German).</p>
+
+    <h2>Verantwortlicher</h2>
+    <p>
+      {site.name}<br />
+      {site.address.street}, {site.address.city}<br />
+      E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+
+    <h2>Hosting und Server-Logfiles</h2>
+    <p>
+      Diese Website wird über {host.name} bereitgestellt, einen Dienst der {host.company}. Beim
+      Aufruf der Seite verarbeitet GitHub technisch notwendige Daten, die Ihr Browser automatisch
+      übermittelt: IP-Adresse, Datum und Uhrzeit des Abrufs, abgerufene Seite, Browsertyp und
+      Betriebssystem. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO; das
+      berechtigte Interesse liegt in der sicheren und stabilen Auslieferung der Website.
+    </p>
+    <p>
+      Dabei können Daten in die USA übermittelt werden. Ich selbst habe keinen Zugriff auf diese
+      Zugriffsdaten und werte sie nicht aus. Weitere Informationen finden Sie in der
+      <a href={host.privacyUrl} rel="noopener">Datenschutzerklärung von GitHub</a>.
+    </p>
+
+    <h2>Cookies, Tracking und externe Inhalte</h2>
+    <p>
+      Diese Website setzt keine Cookies und verwendet keine Analyse- oder Tracking-Dienste. Es werden
+      keine Schriftarten, Skripte oder anderen Inhalte von Servern Dritter geladen.
+    </p>
+    <p>
+      Es werden keine Daten in Ihrem Browser gespeichert, auch nicht im lokalen Speicher
+      (localStorage).
+    </p>
+
+    <p>
+      Der Quellcode dieser Website ist öffentlich einsehbar:
+      <a href={site.source} rel="noopener">{site.source.replace('https://', '')}</a>.
+    </p>
+
+    <h2>Kontakt per E-Mail</h2>
+    <p>
+      Wenn Sie mir eine E-Mail schreiben, verarbeite ich Ihre Angaben, um die Anfrage zu beantworten
+      (Art. 6 Abs. 1 lit. f DSGVO bzw. lit. b bei vorvertraglichen Anfragen). Die Daten werden
+      gelöscht, sobald sie für diesen Zweck nicht mehr erforderlich sind.
+    </p>
+
+    <h2>Externe Links</h2>
+    <p>
+      Die Links zu LinkedIn und GitHub sind einfache Verweise. Daten werden erst an diese Anbieter
+      übertragen, wenn Sie den Link anklicken; dann gelten deren Datenschutzbestimmungen.
+    </p>
+
+    <h2>Ihre Rechte</h2>
+    <p>
+      Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+      Datenübertragbarkeit sowie Widerspruch gegen die Verarbeitung (Art. 15–21 DSGVO). Außerdem
+      können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren, zum Beispiel beim
+      Landesbeauftragten für den Datenschutz und die Informationsfreiheit Baden-Württemberg.
+    </p>
+  </main>
+</Hud>

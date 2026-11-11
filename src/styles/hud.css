@@ -1,0 +1,227 @@
+/* Text pages (Impressum, Datenschutz, 404): same look as the radar page,
+   but scrollable and without the animation. Used by layouts/Hud.astro. */
+
+:root {
+  --bg: #040806;
+  --g: 62, 230, 140;
+  --green: rgb(var(--g));
+  --bright: #b6ffd6;
+  --dim: rgba(var(--g), 0.55);
+  --faint: rgba(var(--g), 0.22);
+  --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Same 48px grid as the radar page, drawn in CSS. */
+  background:
+    linear-gradient(rgba(var(--g), 0.045) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgba(var(--g), 0.045) 1px, transparent 1px) 0 0 / 48px 48px,
+    radial-gradient(120% 60rem at 50% 0, #08170f 0%, var(--bg) 70%);
+  color: rgba(var(--g), 0.88);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fx {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 46rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 1.4rem 1.25rem 1.6rem;
+}
+
+.page > main {
+  flex: 1;
+}
+
+a {
+  color: var(--bright);
+  text-decoration-color: var(--dim);
+  text-underline-offset: 0.25em;
+  transition: color 150ms, text-decoration-color 150ms;
+}
+
+a:hover {
+  color: #fff;
+  text-decoration-color: var(--bright);
+}
+
+:focus-visible {
+  outline: 1px solid var(--bright);
+  outline-offset: 4px;
+}
+
+.top,
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.4rem 1.5rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.top {
+  margin-bottom: 3.5rem;
+}
+
+.top a,
+.foot a {
+  color: var(--dim);
+  text-decoration: none;
+}
+
+.top a:hover,
+.foot a:hover {
+  color: var(--green);
+}
+
+.top .ident {
+  color: var(--green);
+}
+
+.foot {
+  margin-top: 4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--faint);
+}
+
+.foot nav {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Text pages */
+.prose h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 6vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  color: var(--bright);
+  text-shadow: 0 0 18px rgba(var(--g), 0.4);
+}
+
+.prose .note {
+  margin: 0.6rem 0 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.prose h2 {
+  margin: 2.6rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--faint);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.prose h2::before {
+  content: '/ ';
+  color: var(--dim);
+}
+
+.prose p {
+  margin: 0.8rem 0 0;
+  overflow-wrap: break-word;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .top,
+  .page > main,
+  .foot {
+    animation: boot 400ms ease-out both;
+  }
+
+  .page > main {
+    animation-delay: 100ms;
+  }
+
+  .foot {
+    animation-delay: 200ms;
+  }
+
+  @keyframes boot {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+}
+
+@media print {
+  .fx,
+  .top .back,
+  .foot nav {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .prose h1,
+  .prose h2,
+  a {
+    color: #000;
+    text-shadow: none;
+  }
+}

@@ -1,0 +1,33 @@
+---
+import Hud from '../layouts/Hud.astro';
+import { site } from '../data/site';
+---
+
+<Hud lang="de" title={`Impressum — ${site.name}`} path="/impressum/" noindex>
+  <main class="prose">
+    <h1>Impressum</h1>
+    <p class="note">Legal notice (in German, as required by German law).</p>
+
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p>
+      {site.name}<br />
+      {site.address.street}<br />
+      {site.address.city}<br />
+      {site.address.country}
+    </p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+
+    <h2>Verantwortlich für den Inhalt</h2>
+    <p>{site.name}, Anschrift wie oben.</p>
+
+    <h2>Haftung für Links</h2>
+    <p>
+      Diese Website enthält Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss
+      habe. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
+      verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werde ich entsprechende Links umgehend
+      entfernen.
+    </p>
+  </main>
+</Hud>

@@ -1,0 +1,112 @@
+---
+// Served as /404.html: GitHub Pages picks it up automatically, nginx needs
+// "error_page 404 /404.html;" (see README).
+import Hud from '../layouts/Hud.astro';
+---
+
+<Hud lang="en" title="404 - Not Found" noindex>
+  <main class="lost">
+    <div class="mini" aria-hidden="true"><i></i></div>
+    <p class="kicker"><span class="dot"></span>ERROR 404 · NOT FOUND</p>
+    <h1>Page Not Found</h1>
+    <p>
+      The page you were looking for is not on the scope.
+      <span lang="de">Diese Seite wurde nicht gefunden.</span>
+    </p>
+    <p class="actions">
+      <a class="btn" href="/">Back to start</a>
+      <a class="btn" href="/de/" lang="de" hreflang="de">Zur Startseite</a>
+    </p>
+  </main>
+</Hud>
+
+<style is:global>
+  .lost {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 0 3rem;
+  }
+
+  .lost h1 {
+    margin: 0.5rem 0 0;
+    max-width: 16ch;
+    font-size: clamp(1.6rem, 7vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bright);
+    text-shadow: 0 0 18px rgba(var(--g), 0.45);
+  }
+
+  .lost p {
+    margin: 0.9rem 0 0;
+    max-width: 40ch;
+  }
+
+  .lost span[lang='de'] {
+    display: block;
+    color: var(--dim);
+  }
+
+  .lost .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+    max-width: none;
+  }
+
+  .btn {
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--dim);
+    background: rgba(var(--g), 0.06);
+    color: var(--bright);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background 150ms, color 150ms, box-shadow 150ms;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    background: var(--green);
+    color: var(--bg);
+    box-shadow: 0 0 22px rgba(var(--g), 0.45);
+  }
+
+  /* Small empty scope: range rings, sweep, nothing on it. */
+  .mini {
+    position: relative;
+    width: 9rem;
+    height: 9rem;
+    margin-bottom: 2rem;
+    border: 1.5px solid rgba(var(--g), 0.7);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--bright) 0 2px, transparent 2.5px),
+      repeating-radial-gradient(circle, transparent 0 1.05rem, rgba(var(--g), 0.2) 1.05rem calc(1.05rem + 1px), transparent calc(1.05rem + 1px) 1.125rem),
+      radial-gradient(circle, rgba(12, 46, 29, 0.9), rgba(3, 10, 7, 0.94));
+    overflow: hidden;
+  }
+
+  .mini i {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0 250deg, rgba(var(--g), 0.05) 300deg, rgba(var(--g), 0.4) 359.5deg, var(--bright) 360deg);
+    transform: rotate(40deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mini i {
+      animation: sweep 4.5s linear infinite;
+    }
+
+    @keyframes sweep {
+      to {
+        transform: rotate(400deg);
+      }
+    }
+  }
+</style>

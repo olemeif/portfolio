@@ -1,0 +1,52 @@
+---
+// Layout for the text pages (Impressum, Datenschutz, 404) in the same look as
+// the radar page, but scrollable and without the animation.
+import { site } from '../data/site';
+import '../styles/hud.css';
+
+interface Props {
+  title: string;
+  lang?: 'en' | 'de';
+  /** Path of this page, e.g. "/impressum/". Omit for pages without a fixed URL (404). */
+  path?: string;
+  noindex?: boolean;
+}
+
+const { title, lang = 'de', path, noindex = false } = Astro.props;
+const home = lang === 'de' ? '/' : '/en/';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    {noindex && <meta name="robots" content="noindex" />}
+    {path && <link rel="canonical" href={site.url + path} />}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#040806" />
+  </head>
+  <body>
+    <div class="fx" aria-hidden="true"></div>
+    <div class="page">
+      <header class="top">
+        <a class="ident" href={home}><b>OLEMEIF.DE</b></a>
+        <a class="back" href={home}>← {lang === 'de' ? 'ZURÜCK ZUR STARTSEITE' : 'BACK TO START'}</a>
+      </header>
+
+      <slot />
+
+      <footer class="foot">
+        <span>© {new Date().getFullYear()} {site.name}</span>
+        <nav aria-label="Legal">
+          <a href={site.source} rel="noopener">{lang === 'de' ? 'Quellcode' : 'Source'}</a>
+          <a href="/impressum/">Impressum</a>
+          <a href="/datenschutz/">Datenschutz</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
