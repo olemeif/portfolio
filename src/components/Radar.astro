@@ -1,0 +1,176 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import { content, type Locale } from '../data/content';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const { title, description } = t;
+const other: Locale = lang === 'en' ? 'de' : 'en';
+const switchLabel = t.labels.switchLangTitle;
+
+// Structured data so search engines can connect the site, the name and the profiles.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'WebSite', '@id': `${site.url}/#site`, url: `${site.url}/`, name: site.name, inLanguage: ['en', 'de'] },
+    {
+      '@type': 'Person',
+      '@id': `${site.url}/#person`,
+      name: site.name,
+      url: `${site.url}/`,
+      sameAs: [site.github, site.linkedin],
+      affiliation: { '@type': 'CollegeOrUniversity', name: 'University of Stuttgart' },
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={site.url + t.path} />
+    <link rel="alternate" hreflang="en" href={site.url + content.en.path} />
+    <link rel="alternate" hreflang="de" href={site.url + content.de.path} />
+    <link rel="alternate" hreflang="x-default" href={site.url + content.de.path} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={site.url + t.path} />
+    <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_GB'} />
+    <meta property="og:image" content={site.url + '/og.png'} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <meta name="theme-color" content="#040806" />
+  </head>
+  <body>
+    <canvas id="radar" aria-hidden="true"></canvas>
+    <div class="fx" aria-hidden="true"></div>
+    <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+    <main class="hud">
+      <header class="top">
+        <span class="ident"><b>OLEMEIF.DE</b><span class="ident-sub"> // STUTTGART · DE</span></span>
+        <span class="top-right">
+          <span class="tele" aria-hidden="true">
+            AZ <b id="r-az">000</b>° · TRK <b id="r-trk">0</b><span class="tele-utc"> · <b id="r-utc">00:00:00</b>Z</span>
+          </span>
+          <a class="lang" href={content[other].path} hreflang={other} lang={other} aria-label={switchLabel} title={switchLabel}>
+            <!-- Lucide "languages" icon, ISC licence -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m5 8 6 6"></path>
+              <path d="m4 14 6-6 2-3"></path>
+              <path d="M2 5h12"></path>
+              <path d="M7 2h1"></path>
+              <path d="m22 22-5-10-5 10"></path>
+              <path d="M14 18h6"></path>
+            </svg>
+            <span aria-hidden="true">{other.toUpperCase()}</span>
+          </a>
+        </span>
+      </header>
+
+      <section class="panel">
+        <p class="kicker"><span class="dot"></span>{t.kicker}</p>
+        <h1 id="headline" aria-label={site.name}>{site.name.toUpperCase()}</h1>
+        <p class="lead">{t.lead} <span class="lead-more">{t.leadMore}</span></p>
+
+        <nav class="links" aria-label={t.labels.profiles}>
+          <a href={site.github} rel="me noopener" data-ext>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path>
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href={site.linkedin} rel="me noopener" data-ext>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"></path>
+            </svg>
+            <span>LinkedIn</span>
+          </a>
+          <a href={`mailto:${site.email}`}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+              <rect x="1.5" y="3" width="13" height="10" rx="1.5"></rect>
+              <path d="m2 4 6 5 6-5"></path>
+            </svg>
+            <span>{t.labels.contact}</span>
+          </a>
+        </nav>
+
+        <dl class="lock" aria-hidden="true">
+          <div><dt>LOCK</dt><dd id="l-id">---</dd></div>
+          <div><dt>RNG</dt><dd id="l-rng">--.- km</dd></div>
+          <div><dt>BRG</dt><dd id="l-brg">---°</dd></div>
+          <div><dt>SPD</dt><dd id="l-spd">--- m/s</dd></div>
+        </dl>
+
+        <ol class="log" id="log" aria-hidden="true"></ol>
+      </section>
+
+      <div class="scope" id="scope" aria-hidden="true"></div>
+
+      <footer class="foot">
+        <span class="foot-copy">© {new Date().getFullYear()} {site.name}</span>
+        <span>
+          <a href={site.source} rel="noopener" data-ext>{t.labels.source}</a>
+          <a href="/impressum/">Impressum</a>
+          <a href="/datenschutz/">Datenschutz</a>
+        </span>
+      </footer>
+    </main>
+
+    <dialog id="leave" aria-labelledby="leave-title">
+      <p class="kicker" id="leave-title"><span class="dot"></span>{t.leave.title}</p>
+      <p class="leave-text">{t.leave.text}</p>
+      <p class="leave-url" id="leave-url"></p>
+      <div class="leave-actions">
+        <button type="button" id="leave-stay">{t.leave.stay}</button>
+        <a id="leave-go" href="/" rel="noopener">{t.leave.go}</a>
+      </div>
+    </dialog>
+
+    <script>
+      import '../scripts/radar.js';
+
+      // Ask before following a link to another website (not for mailto). Without JavaScript the
+      // links simply work as normal links.
+      const dialog = document.getElementById('leave') as HTMLDialogElement;
+      const go = document.getElementById('leave-go') as HTMLAnchorElement;
+      const url = document.getElementById('leave-url')!;
+
+      if (typeof dialog.showModal === 'function') {
+        document.querySelectorAll<HTMLAnchorElement>('a[data-ext]').forEach((link) => {
+          link.addEventListener('click', (e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            e.preventDefault();
+            go.href = link.href;
+            url.textContent = link.href;
+            dialog.showModal();
+            go.focus();
+          });
+        });
+        document.getElementById('leave-stay')!.addEventListener('click', () => dialog.close());
+        go.addEventListener('click', () => dialog.close());
+        // A click on the backdrop lands on the dialog element itself.
+        dialog.addEventListener('click', (e) => {
+          if (e.target === dialog) dialog.close();
+        });
+      }
+    </script>
+  </body>
+</html>
